@@ -117,7 +117,7 @@ data_file = arg_dict["file"]
 x_values, y_values = file_to_points(data_file, arg_dict["time_format"])
 
 # apply plot settings and draw plot
-print("Drawing plot...")
+print("drawing plot...")
 xsize = arg_dict["xsize"]
 ysize = arg_dict["ysize"]
 plt.figure(figsize=(xsize, ysize), num="Pressure Plot")
@@ -135,6 +135,7 @@ ref_file = arg_dict["ref_file"]
 if ref_file is not None:
     x_values_r, y_values_r = file_to_points(ref_file, arg_dict["time_format"])
 
+print("drawing reference plot...")
 plt.plot(x_values_r[0], y_values_r[0], color="green")
 
 # make grid
