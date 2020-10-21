@@ -1,0 +1,23 @@
+#############################################
+
+> y-logarithmisch
+> x-Zeit (seit Anfang in sec/min/hr)
+
+> einfach: nur anzeigen
+- komplex: nach startpunkt fahnden
+
+> Design: maßlinien(schwach) DONE
+
+
+> time display: raw, seconds, minutes, hours, (smart)(HOW?) DONE
+
+- Arguments:    [Style] - grid: yes/no, color, line width, both/major,
+                        
+                [Format]> timeformat: seconds, minutes, hours
+
+####
+- statt datum fortlaufende zahl oder anderes format
+                
+> mehr als 2 listen -> DATE CONVERT TODO
+
+- 2 dateien (referenzkurve)

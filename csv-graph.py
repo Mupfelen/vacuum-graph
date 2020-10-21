@@ -52,7 +52,6 @@ def parse_data(in_list):
 
 def convert_time(point_list, format="seconds"):
     first_time = point_list[0][0]
-    print(first_time)
     new_list = []
     divisor = 1
     if format == "minutes":
@@ -67,6 +66,27 @@ def convert_time(point_list, format="seconds"):
     return new_list
 
 
+def file_to_points(file, time_format):
+    # open given file
+    print(f"opening file {data_file}...")
+    file_lines = read_file_txt(file)
+
+    # parse data
+    print(f"file opened successfully. reading data...")
+    points_list = parse_data(file_lines)
+
+    # convert time formats
+    print("data processed successfully. converting...")
+    converted_list = [[x for x in convert_time(points, time_format)
+                       ] for points in points_list]
+
+    # convert points into usable data for pyplot
+    x_values = [[x[0] for x in points] for points in converted_list]
+    y_values = [[y[1] for y in points] for points in converted_list]
+
+    return x_values, y_values
+
+
 # add CL arguments
 parser = arg.ArgumentParser(description="Show a graph for input data.")
 parser.add_argument("file", help="The file to read")
@@ -76,9 +96,8 @@ parser.add_argument("-t", "--time", metavar="TIME",
                     help="The time format. [seconds, minutes, hours]",
                     dest="time_format", default="seconds",
                     choices=["seconds", "minutes", "hours"])
-parser.add_argument("-p", "--plot", metavar="CHOICE", default="both",
-                    choices=["red", "blue", "both"],
-                    help="Which graphs to plot. [red, blue, both]",
+parser.add_argument("-p", "--plot", metavar="CHOICE", default="all",
+                    help="Which graph to plot. [all] or int (0-first)",
                     dest="plot_choice")
 parser.add_argument("-x", "--xsize", default="10", type=int,
                     help="Width of the window, default 10", dest="xsize",
@@ -94,23 +113,8 @@ args = parser.parse_args()
 arg_dict = vars(args)
 data_file = arg_dict["file"]
 
-# open given file
-print(f"opening file {data_file}...")
-file_lines = read_file_txt(data_file)
-
-# parse data
-print(f"file opened successfully. reading data...")
-points_list = parse_data(file_lines)
-
-# convert time formats
-print("data processed successfully. converting...")
-time_format = arg_dict["time_format"]
-converted_list = [[x for x in convert_time(points, time_format)
-                   ] for points in points_list]
-
-# convert points into usable data for pyplot
-x_values = [[x[0] for x in points] for points in converted_list]
-y_values = [[y[1] for y in points] for points in converted_list]
+# get pyplot compatible lists from file
+x_values, y_values = file_to_points(data_file, arg_dict["time_format"])
 
 # apply plot settings and draw plot
 print("Drawing plot...")
@@ -120,8 +124,18 @@ plt.figure(figsize=(xsize, ysize), num="Pressure Plot")
 
 # select which graphs to plot
 which_plot = arg_dict["plot_choice"]
-for i, _ in enumerate(x_values):
-    plt.plot(x_values[i], y_values[i])
+if which_plot == "all":
+    for i, _ in enumerate(x_values):
+        plt.plot(x_values[i], y_values[i])
+else:
+    plt.plot(x_values[int(which_plot)], y_values[int(which_plot)])
+
+# if ref file is set, get ref lists from file
+ref_file = arg_dict["ref_file"]
+if ref_file is not None:
+    x_values_r, y_values_r = file_to_points(ref_file, arg_dict["time_format"])
+
+plt.plot(x_values_r[0], y_values_r[0], color="green")
 
 # make grid
 grid_choice = arg_dict["grid"]
@@ -129,7 +143,7 @@ if (grid_choice is True):
     plt.grid(which='both', color='grey', linestyle='-', linewidth=0.3)
 
 # set labels and scales
-plt.xlabel(f'time in {time_format}')
+plt.xlabel(f'time in {arg_dict["time_format"]}')
 plt.ylabel('pressure in mbar')
 plt.yscale('log')
 
