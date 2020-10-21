@@ -32,9 +32,7 @@ def read_file_txt(path):
 # return list of lists by delimit string
 def parse_data(in_list):
     # determine dataset size
-    points_list = []
-    for _ in range(1, len(in_list[0].split('\t'))):
-        points_list.append([])
+    points_list = [[] for _ in range(1, len(in_list[0].split('\t')))]
 
     for line in in_list:
         # split by tabs
@@ -52,16 +50,15 @@ def parse_data(in_list):
 
 def convert_time(point_list, format="seconds"):
     first_time = point_list[0][0]
-    new_list = []
+
     divisor = 1
     if format == "minutes":
         divisor = 60
     elif format == "hours":
         divisor = 3600
 
-    for point in point_list:
-        point = ((point[0] - first_time).total_seconds() / divisor, point[1])
-        new_list.append(point)
+    new_list = [((point[0] - first_time).total_seconds() / divisor, point[1])
+                for point in point_list]
 
     return new_list
 
