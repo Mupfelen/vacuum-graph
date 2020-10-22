@@ -5,12 +5,6 @@ second_strings = ["1", "2", "3", "4", "5", "6"]
 
 string_2d = [first_strings, second_strings]
 
-l = []
-l[0] = 5
-l[5] = 2
-
-print(l)
-
 fig, ax = plt.subplots()
 
 # hide axes

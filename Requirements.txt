@@ -20,4 +20,4 @@
                 
 > mehr als 2 listen -> DATE CONVERT TODO
 
-- 2 dateien (referenzkurve)
+> 2 dateien (referenzkurve)
