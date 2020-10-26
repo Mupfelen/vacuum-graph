@@ -6,8 +6,9 @@ import argparse as arg
 def cut_values(x_values, y_values, start, interval, end=None):
     index = x_values.index(start)
     count = len(x_values)
-    del x_values[0:index-1]
-    del y_values[0:index-1]
+    if index > 0:
+        del x_values[0:index-1]
+        del y_values[0:index-1]
 
     if end is not None:
         end_index = x_values.index(end)
@@ -32,6 +33,8 @@ parser.add_argument("-i", "--interval", help="Interval for time",
                     metavar="VALUE", default=1, type=int)
 parser.add_argument("-e", "--end", help="Interval for time",
                     metavar="VALUE")
+parser.add_argument("-g", "--grid", help="Whether to display a grid",
+                    action="store_true")
 
 args = parser.parse_args()
 arg_dict = vars(args)
@@ -41,12 +44,15 @@ x_values, y_values = do.file_to_points(data_file, arg_dict["time_format"])
 x_values = x_values[0]
 y_values = y_values[0]
 
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(2, 1)
+
+ax[0].plot(x_values, y_values)
+ax[0].set(yscale="log")
 
 # hide axes
 fig.patch.set_visible(False)
-ax.axis('off')
-ax.axis('tight')
+ax[1].axis('off')
+ax[1].axis('tight')
 
 start = arg_dict["start"]
 end = arg_dict["end"]
@@ -56,7 +62,7 @@ x_and_y = cut_values(x_values, y_values, start, interval, end)
 new_list = list(zip(*x_and_y))
 
 print("drawing plot...")
-ax.table(cellText=new_list, loc="center")
+ax[1].table(cellText=new_list, loc="center")
 
 fig.tight_layout()
 
