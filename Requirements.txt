@@ -21,3 +21,12 @@
 > mehr als 2 listen -> DATE CONVERT TODO
 
 > 2 dateien (referenzkurve)
+
+################################################################################################
+TABLE SCRIPT
+
+- mehrere Graphen
+
+- weitere Spalten für Tabelle
+
+- verhältnis anpassen
