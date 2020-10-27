@@ -5,20 +5,28 @@ import argparse as arg
 
 def cut_values(x_values, y_values, start, interval, end=None):
     index = x_values.index(start)
-    count = len(x_values)
     if index > 0:
         del x_values[0:index-1]
         del y_values[0:index-1]
 
     if end is not None:
         end_index = x_values.index(end)
-        del x_values[end_index:count-1]
-        del y_values[end_index:count-1]
+        del x_values[end_index:-1]
+        del y_values[end_index:-1]
 
-    new_list = [(x, y) for x, y in zip(x_values, y_values) if x % interval == 0]
+    new_list = [(x, y) for x, y in zip(x_values, y_values) if (x - start) % interval == 0]
     new_list = list(zip(*new_list))
 
     return new_list
+
+
+def find_start(y_values, trigger=0):
+    last = -1
+    for i, val in enumerate(y_values):
+        if last != -1:
+            if val < last + trigger:
+                return i
+        last = val
 
 
 parser = arg.ArgumentParser(description="Show a graph and table for \
@@ -44,7 +52,8 @@ x_values, y_values = do.file_to_points(data_file, arg_dict["time_format"])
 x_values = x_values[0]
 y_values = y_values[0]
 
-fig, ax = plt.subplots(2, 1)
+fig, ax = plt.subplots(2, 1, figsize=(12, 7), num="Pressure Plot / Table")
+# plt.subplots_adjust(bottom=0, hspace=0)
 
 ax[0].plot(x_values, y_values)
 ax[0].set(yscale="log")
@@ -60,9 +69,15 @@ interval = arg_dict["interval"]
 x_and_y = cut_values(x_values, y_values, start, interval, end)
 
 new_list = list(zip(*x_and_y))
+new_list.insert(0, [f"t in {arg_dict['time_format']}", "p in mbar"])
+
+# make grid
+grid_choice = arg_dict["grid"]
+if (grid_choice is True):
+    ax[0].grid(which='both', color='grey', linestyle='-', linewidth=0.3)
 
 print("drawing plot...")
-ax[1].table(cellText=new_list, loc="center")
+ax[1].table(cellText=new_list, loc="best")
 
 fig.tight_layout()
 
