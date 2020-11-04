@@ -77,7 +77,7 @@ ax[1].axis('tight')
 start = arg_dict["start"]
 end = arg_dict["end"]
 interval = arg_dict["interval"]
-x_list
+
 x_and_y = cut_values(x_values, y_values, start, interval, end)
 
 new_list = list(zip(*x_and_y))
