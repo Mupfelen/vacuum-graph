@@ -7,14 +7,12 @@ def cut_values(x_values, y_values, start, interval, end=None):
     index = x_values.index(start)
     if index > 0:
         del x_values[0:index-1]
-        for y in y_values:
-            del y[0:index-1]
+        del y_values[0:index-1]
 
     if end is not None:
         end_index = x_values.index(end)
         del x_values[end_index:-1]
-        for y in y_values:
-            del y[end_index:-1]
+        del y_values[end_index:-1]
 
     new_list = [(x, y) for x, y in zip(x_values, y_values) if (x - start) % interval == 0]
     new_list = list(zip(*new_list))
@@ -58,10 +56,6 @@ data_file = arg_dict["file"]
 x_values, y_values = do.file_to_points(data_file, arg_dict["time_format"])
 x_values = x_values[0]
 
-ind = find_start(y_values[0], 100)
-print(y_values[0][ind])
-print(ind)
-
 fig, ax = plt.subplots(2, 1, figsize=(12, 7), num="Pressure Plot / Table")
 # plt.subplots_adjust(bottom=0, hspace=0)
 
@@ -83,6 +77,7 @@ ax[1].axis('tight')
 start = arg_dict["start"]
 end = arg_dict["end"]
 interval = arg_dict["interval"]
+x_list
 x_and_y = cut_values(x_values, y_values, start, interval, end)
 
 new_list = list(zip(*x_and_y))
