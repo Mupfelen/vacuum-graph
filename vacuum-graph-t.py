@@ -7,15 +7,23 @@ def cut_values(x_values, y_values, start, interval, end=None):
     index = x_values.index(start)
     if index > 0:
         del x_values[0:index-1]
-        del y_values[0:index-1]
+        for y in y_values:
+            del y[0:index-1]
 
     if end is not None:
         end_index = x_values.index(end)
         del x_values[end_index:-1]
-        del y_values[end_index:-1]
+        for y in y_values:
+            del y_values[end_index:-1]
 
-    new_list = [(x, y) for x, y in zip(x_values, y_values) if (x - start) % interval == 0]
-    new_list = list(zip(*new_list))
+    new_list = [(x) for x in zip(x_values, *y_values) if (x[0] - start) % interval == 0]
+
+    return new_list
+
+
+def convert_list(x_values, y_values, interval):
+    new_list = []
+    new_list.insert(0, [x for x in x_values if (x - start) % interval == 0])
 
     return new_list
 
@@ -80,8 +88,10 @@ interval = arg_dict["interval"]
 
 x_and_y = cut_values(x_values, y_values, start, interval, end)
 
-new_list = list(zip(*x_and_y))
-new_list.insert(0, [f"t in {arg_dict['time_format']}", "p in mbar"])
+# new_list = list(zip(*x_and_y))
+print(x_and_y)
+
+col_labels = [f"t in {arg_dict['time_format']}", "column 1", "column 2", "column3"]
 
 # make grid
 grid_choice = arg_dict["grid"]
@@ -89,7 +99,7 @@ if (grid_choice is True):
     ax[0].grid(which='both', color='grey', linestyle='-', linewidth=0.3)
 
 print("drawing plot...")
-ax[1].table(cellText=new_list, loc="center")
+ax[1].table(cellText=x_and_y, colLabels=col_labels, loc="center")
 
 fig.tight_layout()
 

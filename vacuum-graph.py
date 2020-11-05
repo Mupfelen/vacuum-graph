@@ -35,7 +35,6 @@ data_file = arg_dict["file"]
 
 # get pyplot compatible lists from file
 x_values, y_values = do.file_to_points(data_file, arg_dict["time_format"])
-print(x_values)
 
 # apply plot settings and draw plot
 print("drawing plot...")
